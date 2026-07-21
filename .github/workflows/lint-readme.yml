@@ -1,0 +1,20 @@
+name: Lint README tables
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check all anchors still present
+        run: |
+          for anchor in "TABLE:orchestrator:end" "TABLE:document-intel:end" "TABLE:node-express:end" "TABLE:other:end" "FAMILIES:end"; do
+            if ! grep -q "<!-- $anchor -->" README.md; then
+              echo "::error::Missing anchor: $anchor — did a PR delete it?"
+              exit 1
+            fi
+          done

@@ -1,0 +1,55 @@
+name: 🧩 Propose a new template family
+description: Suggest a new category (like "Orchestrator" or "Document Intel") for the catalog.
+title: '[New Family]: '
+labels: ['new-family', 'needs-discussion']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A maintainer reviews this before anything is scaffolded — no automatic changes
+        happen just from opening this issue. Once approved, a bot will draft a PR
+        adding the section skeleton below to the README.
+
+  - type: input
+    id: family-name
+    attributes:
+      label: Family name
+      placeholder: 'Voice Agent Templates'
+    validations:
+      required: true
+
+  - type: input
+    id: anchor-key
+    attributes:
+      label: Anchor key (lowercase, hyphenated, no spaces)
+      placeholder: 'voice-agent'
+    validations:
+      required: true
+
+  - type: input
+    id: emoji
+    attributes:
+      label: Emoji for the section heading (optional)
+      placeholder: '🎙️'
+
+  - type: textarea
+    id: intro
+    attributes:
+      label: One-paragraph intro for the section
+      placeholder: What kind of templates belong here, and what ties them together?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tiers
+    attributes:
+      label: Proposed tier breakdown
+      placeholder: Does this need POC/Intermediate/Advanced, or a different structure?
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing-repos
+    attributes:
+      label: Existing repo(s), if any
+      placeholder: Links, or "none yet — proposing the category first"

@@ -1,0 +1,71 @@
+name: 📦 Add a template to the catalog
+description: Propose adding your (or someone else's) template repo to a family table.
+title: '[Add Template]: '
+labels: ['new-template']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If your template doesn't fit any family below (Orchestrator, Document Intel,
+        Node/Express), it'll be added to "Other Templates" — or use the
+        "Propose a new family" template instead if it deserves its own category.
+
+  - type: input
+    id: repo-url
+    attributes:
+      label: Repository URL
+      placeholder: https://github.com/your-username/your-template-repo
+    validations:
+      required: true
+
+  - type: dropdown
+    id: family
+    attributes:
+      label: Which family does this belong to?
+      options:
+        - Multi-Agent Orchestrator
+        - Document Intelligence (RAG)
+        - Node/Express Backend
+        - Other / doesn't fit an existing family
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier (if applicable)
+      options:
+        - POC
+        - Intermediate
+        - Advanced
+        - Not tiered
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: One-line description
+      placeholder: 'Production-grade X on Y — Postgres-backed state, SSO, ... Advanced tier of the Z family.'
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: '"Use it when..." — one sentence'
+      placeholder: You have real users needing isolation and want an audit trail.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: The repo has a README explaining setup and usage
+          required: true
+        - label: The repo has a license (MIT preferred, but any OSI license is fine)
+          required: true
+        - label: I'm the author, or I have permission/it's already public and open-source
+          required: true
