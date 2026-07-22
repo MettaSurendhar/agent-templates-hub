@@ -48,6 +48,7 @@ jobs:
               'Multi-Agent Orchestrator': 'orchestrator',
               'Document Intelligence (RAG)': 'document-intel',
               'Node/Express Backend': 'node-express',
+              'Test Template': 'test-template',
               "Other / doesn't fit an existing family": 'other',
             };
             const anchorKey = familyMap[family];

@@ -26,6 +26,7 @@ body:
         - "Multi-Agent Orchestrator"
         - "Document Intelligence (RAG)"
         - "Node/Express Backend"
+        - "Test Template"
         - "Other / doesn't fit an existing family"
     validations:
       required: true
