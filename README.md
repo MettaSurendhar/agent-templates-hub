@@ -60,6 +60,7 @@ Plain backend scaffolding — no agent logic, just a solid starting point for an
 | ------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
 | [express-api-boilerplate](https://github.com/MettaSurendhar/express-api-boilerplate) | General-purpose Express API boilerplate.                   |
 | [Met-Social-Media-API](https://github.com/MettaSurendhar/Met-Social-Media-API)       | Reference implementation of a social-media style REST API. |
+| [RAG-testing-automation](https://github.com/MettaSurendhar/RAG-testing-automation) | test desc |
 <!-- TABLE:other:end -->
 
 <!-- FAMILIES:end -->
