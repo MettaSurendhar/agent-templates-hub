@@ -1,100 +1,70 @@
-name: Add template to catalog
+name: "📦 Add a template to the catalog"
+description: "Propose adding your (or someone else's) template repo to a family table."
+title: "[Add Template]: "
+labels: ["new-template"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If your template doesn't fit any family below (Orchestrator, Document Intel,
+        Node/Express), it'll be added to "Other Templates" — or use the
+        "Propose a new family" template instead if it deserves its own category.
 
-on:
-  issues:
-    types: [opened]
+  - type: input
+    id: repo-url
+    attributes:
+      label: "Repository URL"
+      placeholder: "https://github.com/your-username/your-template-repo"
+    validations:
+      required: true
 
-concurrency:
-  group: add-template-${{ github.event.issue.number }}
-  cancel-in-progress: true
+  - type: dropdown
+    id: family
+    attributes:
+      label: "Which family does this belong to?"
+      options:
+        - "Multi-Agent Orchestrator"
+        - "Document Intelligence (RAG)"
+        - "Node/Express Backend"
+        - "Other / doesn't fit an existing family"
+    validations:
+      required: true
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  - type: dropdown
+    id: tier
+    attributes:
+      label: "Tier (if applicable)"
+      options:
+        - "POC"
+        - "Intermediate"
+        - "Advanced"
+        - "Not tiered"
+    validations:
+      required: true
 
-jobs:
-  add-template:
-    if: contains(github.event.issue.labels.*.name, 'new-template')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  - type: textarea
+    id: description
+    attributes:
+      label: "One-line description"
+      description: "Same style as the family tables — what it does and what makes this tier distinct."
+      placeholder: "Production-grade X on Y — Postgres-backed state, SSO, ... Advanced tier of the Z family."
+    validations:
+      required: true
 
-      - name: Parse issue and update README
-        id: parse
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const body = context.payload.issue.body;
+  - type: textarea
+    id: use-case
+    attributes:
+      label: "\"Use it when...\" — one sentence"
+      placeholder: "You have real users needing isolation and want an audit trail."
 
-            function extract(label) {
-              const re = new RegExp(`### ${label}\\s*\\n\\n([\\s\\S]*?)(?=\\n### |$)`);
-              const m = body.match(re);
-              let val = m ? m[1].trim() : '';
-              if (val === '_No response_') val = '';
-              return val;
-            }
-
-            function slugify(str) {
-              return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            }
-
-            const repoUrl = extract('Repository URL');
-            const family = extract('Which family does this belong to\\?');
-            const tier = extract('Tier \\(if applicable\\)');
-            const description = extract('One-line description');
-
-            if (!repoUrl.startsWith('https://github.com/')) {
-              core.setFailed('Repository URL must be a github.com link.');
-              return;
-            }
-
-            const familyMap = {
-              'Multi-Agent Orchestrator': 'orchestrator',
-              'Document Intelligence (RAG)': 'document-intel',
-              'Node/Express Backend': 'node-express',
-              "Other / doesn't fit an existing family": 'other',
-            };
-            const anchorKey = familyMap[family];
-            if (!anchorKey) {
-              await github.rest.issues.createComment({
-                ...context.repo,
-                issue_number: context.issue.number,
-                body: "Couldn't match this to a known family table — a maintainer will review manually."
-              });
-              core.setOutput('skip', 'true');
-              return;
-            }
-
-            const repoName = repoUrl.replace('https://github.com/', '').replace(/\/$/, '');
-            const linkText = repoName.split('/')[1];
-            const row = anchorKey === 'other'
-              ? `| [${linkText}](${repoUrl}) | ${description.replace(/\|/g, '\\|')} |`
-              : `| ${tier || 'N/A'} | ${description.replace(/\|/g, '\\|')} | [${linkText}](${repoUrl}) |`;
-
-            const readme = fs.readFileSync('README.md', 'utf8');
-            const anchor = `<!-- TABLE:${anchorKey}:end -->`;
-            if (!readme.includes(anchor)) {
-              core.setFailed(`Anchor ${anchor} not found in README.md`);
-              return;
-            }
-            fs.writeFileSync('README.md', readme.replace(anchor, `${row}\n${anchor}`));
-
-            core.setOutput('skip', 'false');
-            core.setOutput('branch', `add-template/${slugify(linkText)}-issue-${context.issue.number}`);
-            core.setOutput('repo_name', linkText);
-
-      - name: Open PR
-        if: steps.parse.outputs.skip == 'false'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "Add ${{ steps.parse.outputs.repo_name }} to catalog"
-          branch: ${{ steps.parse.outputs.branch }}
-          title: "Add ${{ steps.parse.outputs.repo_name }} to catalog"
-          body: |
-            Auto-generated from #${{ github.event.issue.number }}. Review before merging.
-
-            Closes #${{ github.event.issue.number }}
-          base: main
-          delete-branch: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "The repo has a README explaining setup and usage"
+          required: true
+        - label: "The repo has a license (MIT preferred, but any OSI license is fine)"
+          required: true
+        - label: "I'm the author, or I have permission/it's already public and open-source"
+          required: true
