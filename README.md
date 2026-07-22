@@ -62,6 +62,15 @@ Plain backend scaffolding — no agent logic, just a solid starting point for an
 | [Met-Social-Media-API](https://github.com/MettaSurendhar/Met-Social-Media-API)       | Reference implementation of a social-media style REST API. |
 <!-- TABLE:other:end -->
 
+
+## 📦 Test Template
+
+test para
+
+| Tier | Use it when... | Repo |
+| ---- | ---------------- | ---- |
+<!-- TABLE:test-template:end -->
+
 <!-- FAMILIES:end -->
 
 ---
