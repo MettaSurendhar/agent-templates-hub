@@ -31,7 +31,6 @@ step genuinely depends on what previous steps found, not a fixed pipeline.
 | Advanced — LangGraph   | LangGraph   | Real organization: Postgres state at scale, SSO, per-team isolation, review queue. | [agent-template-orchestrator-advanced-langgraph](https://github.com/MettaSurendhar/agent-template-orchestrator-advanced-langgraph) |
 | Advanced — AWS Strands | AWS Strands | Same production feature set as above, built on AWS Strands Agents SDK instead.     | [agent-template-orchestrator-advanced-strands](https://github.com/MettaSurendhar/agent-template-orchestrator-advanced-strands)     |
 
-<!-- TABLE:orchestrator:end -->
 
 ## 📄 Document Intelligence (RAG) Agent Templates
 
