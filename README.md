@@ -30,7 +30,6 @@ step genuinely depends on what previous steps found, not a fixed pipeline.
 | Intermediate           | LangGraph   | Real users, runs need to survive a restart, want auth + audit.                     | [agent-template-orchestrator-intermediate](https://github.com/MettaSurendhar/agent-template-orchestrator-intermediate)             |
 | Advanced — LangGraph   | LangGraph   | Real organization: Postgres state at scale, SSO, per-team isolation, review queue. | [agent-template-orchestrator-advanced-langgraph](https://github.com/MettaSurendhar/agent-template-orchestrator-advanced-langgraph) |
 | Advanced — AWS Strands | AWS Strands | Same production feature set as above, built on AWS Strands Agents SDK instead.     | [agent-template-orchestrator-advanced-strands](https://github.com/MettaSurendhar/agent-template-orchestrator-advanced-strands)     |
-
 <!-- TABLE:orchestrator:end -->
 
 ## 📄 Document Intelligence (RAG) Agent Templates
@@ -43,7 +42,6 @@ own documents, no silent hallucination.
 | POC          | Prototyping or demoing. Single-user, no auth, ChromaDB, minutes to first answer.            | [agent-template-document-intel-poc](https://github.com/MettaSurendhar/agent-template-document-intel-poc)                   |
 | Intermediate | Real users needing isolation, FAISS vs. Chroma comparison, an audit trail.                  | [agent-template-document-intel-intermediate](https://github.com/MettaSurendhar/agent-template-document-intel-intermediate) |
 | Advanced     | Real team/org: multi-team isolation, SSO, compliance-grade audit, AWS Bedrock + OpenSearch. | [agent-template-document-intel-advanced](https://github.com/MettaSurendhar/agent-template-document-intel-advanced)         |
-
 <!-- TABLE:document-intel:end -->
 
 ## 🧱 Node/Express Backend Templates
@@ -54,7 +52,6 @@ Plain backend scaffolding — no agent logic, just a solid starting point for an
 | --------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Node/Express — Beginner     | You want the simplest possible Express starting point.                                | [node-express-backend-template-for-beginner](https://github.com/MettaSurendhar/node-express-backend-template-for-beginner)         |
 | Node/Express — Intermediate | You want structure: routing, middleware, error handling conventions already in place. | [node-express-backend-template-for-intermediate](https://github.com/MettaSurendhar/node-express-backend-template-for-intermediate) |
-
 <!-- TABLE:node-express:end -->
 
 ## 🔧 Other Templates & Reference Projects
@@ -63,7 +60,6 @@ Plain backend scaffolding — no agent logic, just a solid starting point for an
 | ------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
 | [express-api-boilerplate](https://github.com/MettaSurendhar/express-api-boilerplate) | General-purpose Express API boilerplate.                   |
 | [Met-Social-Media-API](https://github.com/MettaSurendhar/Met-Social-Media-API)       | Reference implementation of a social-media style REST API. |
-
 <!-- TABLE:other:end -->
 <!-- FAMILIES:end -->
 
