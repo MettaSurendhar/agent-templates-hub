@@ -1,103 +1,55 @@
-name: Scaffold new family
+name: "🧩 Propose a new template family"
+description: "Suggest a new category (like Orchestrator or Document Intel) for the catalog."
+title: "[New Family]: "
+labels: ["new-family", "needs-discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A maintainer reviews this before anything is scaffolded — no automatic changes
+        happen just from opening this issue. Once approved, a bot will draft a PR
+        adding the section skeleton below to the README.
 
-on:
-  issues:
-    types: [labeled]
+  - type: input
+    id: family-name
+    attributes:
+      label: "Family name"
+      placeholder: "Voice Agent Templates"
+    validations:
+      required: true
 
-concurrency:
-  group: new-family-${{ github.event.issue.number }}
-  cancel-in-progress: true
+  - type: input
+    id: anchor-key
+    attributes:
+      label: "Anchor key (lowercase, hyphenated, no spaces)"
+      placeholder: "voice-agent"
+    validations:
+      required: true
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  - type: input
+    id: emoji
+    attributes:
+      label: "Emoji for the section heading (optional)"
+      placeholder: "🎙️"
 
-jobs:
-  scaffold-new-family:
-    if: >
-      github.event.label.name == 'approved' &&
-      contains(github.event.issue.labels.*.name, 'new-family')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  - type: textarea
+    id: intro
+    attributes:
+      label: "One-paragraph intro for the section"
+      placeholder: "What kind of templates belong here, and what ties them together?"
+    validations:
+      required: true
 
-      - name: Parse issue and scaffold section
-        id: parse
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const body = context.payload.issue.body;
+  - type: textarea
+    id: tiers
+    attributes:
+      label: "Proposed tier breakdown"
+      placeholder: "Does this need POC/Intermediate/Advanced, or a different structure?"
+    validations:
+      required: true
 
-            function extract(label) {
-              const re = new RegExp(`### ${label}\\s*\\n\\n([\\s\\S]*?)(?=\\n### |$)`);
-              const m = body.match(re);
-              let val = m ? m[1].trim() : '';
-              if (val === '_No response_') val = '';
-              return val;
-            }
-
-            function slugify(str) {
-              return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-            }
-
-            const familyName = extract('Family name');
-            const anchorKeyRaw = extract('Anchor key \\(lowercase, hyphenated, no spaces\\)');
-            const emoji = extract('Emoji for the section heading \\(optional\\)') || '📦';
-            const intro = extract('One-paragraph intro for the section');
-
-            if (!familyName || !anchorKeyRaw || !intro) {
-              core.setFailed('Family name, anchor key, and intro are all required — one was empty.');
-              return;
-            }
-
-            const anchorKey = anchorKeyRaw.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-
-            const readme = fs.readFileSync('README.md', 'utf8');
-            const marker = '<!-- FAMILIES:end -->';
-            if (!readme.includes(marker)) {
-              core.setFailed('FAMILIES:end marker not found in README.md');
-              return;
-            }
-            if (readme.includes(`TABLE:${anchorKey}:end`)) {
-              core.setFailed(`A table with anchor key "${anchorKey}" already exists — pick a different key.`);
-              return;
-            }
-
-            const section = [
-              '',
-              `## ${emoji} ${familyName}`,
-              '',
-              intro,
-              '',
-              '| Tier | Use it when... | Repo |',
-              '| ---- | ---------------- | ---- |',
-              `<!-- TABLE:${anchorKey}:end -->`,
-              ''
-            ].join('\n');
-
-            fs.writeFileSync('README.md', readme.replace(marker, `${section}\n${marker}`));
-
-            core.setOutput('branch', `new-family/${slugify(anchorKey)}-issue-${context.issue.number}`);
-            core.setOutput('family_name', familyName);
-            core.setOutput('anchor_key', anchorKey);
-
-      - name: Open PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "Scaffold '${{ steps.parse.outputs.family_name }}' family"
-          branch: ${{ steps.parse.outputs.branch }}
-          title: "Scaffold new family: ${{ steps.parse.outputs.family_name }}"
-          body: |
-            Auto-generated from #${{ github.event.issue.number }} after maintainer approval.
-
-            **Manual follow-up after merging this PR:**
-            Add `'${{ steps.parse.outputs.family_name }}': '${{ steps.parse.outputs.anchor_key }}'`
-            to the `familyMap` in `.github/workflows/add-template.yml`, and add
-            `${{ steps.parse.outputs.family_name }}` as a dropdown option in
-            `.github/ISSUE_TEMPLATE/add_template.yml`.
-
-            Closes #${{ github.event.issue.number }}
-          base: main
-          delete-branch: true
+  - type: textarea
+    id: existing-repos
+    attributes:
+      label: "Existing repo(s), if any"
+      placeholder: "Links, or none yet — proposing the category first"
