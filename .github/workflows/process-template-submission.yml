@@ -51,7 +51,7 @@ jobs:
               await github.rest.issues.createComment({
                 ...context.repo,
                 issue_number: context.issue.number,
-                body: "Couldn't match this to a known family table — a maintainer will review manually. If this should be its own category, consider the 'Propose a new family' template instead."
+                body: "Couldn't match this to a known family table — a maintainer will review manually."
               });
               core.setOutput('skip', 'true');
               return;
@@ -75,28 +75,21 @@ jobs:
             core.setOutput('branch', `add-template/issue-${context.issue.number}`);
             core.setOutput('repo_name', linkText);
 
-      - name: Commit
-        if: steps.parse.outputs.skip == 'false'
-        run: |
-          git config user.name "template-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git checkout -b "${{ steps.parse.outputs.branch }}"
-          git add README.md
-          git commit -m "Add ${{ steps.parse.outputs.repo_name }} to catalog (closes #${{ github.event.issue.number }})"
-          git push origin "${{ steps.parse.outputs.branch }}"
-
       - name: Open PR
         if: steps.parse.outputs.skip == 'false'
         uses: peter-evans/create-pull-request@v6
         with:
+          commit-message: "Add ${{ steps.parse.outputs.repo_name }} to catalog"
           branch: ${{ steps.parse.outputs.branch }}
-          title: 'Add ${{ steps.parse.outputs.repo_name }} to catalog'
+          title: "Add ${{ steps.parse.outputs.repo_name }} to catalog"
           body: |
             Auto-generated from #${{ github.event.issue.number }}. Review before merging.
+
+            Closes #${{ github.event.issue.number }}
           base: main
+          delete-branch: true
 
   scaffold-new-family:
-    # Only fires when a maintainer adds the "approved" label — not on issue open.
     if: >
       github.event.action == 'labeled' &&
       github.event.label.name == 'approved' &&
@@ -137,15 +130,17 @@ jobs:
               return;
             }
 
-            const section = `
-            ## ${emoji} ${familyName}
-
-            ${intro}
-
-            | Tier | Use it when... | Repo |
-            | ---- | ---------------- | ---- |
-            <!-- TABLE:${anchorKey}:end -->
-            `.replace(/^ {12}/gm, ''); // strip the JS indentation
+            const section = [
+              '',
+              `## ${emoji} ${familyName}`,
+              '',
+              intro,
+              '',
+              '| Tier | Use it when... | Repo |',
+              '| ---- | ---------------- | ---- |',
+              `<!-- TABLE:${anchorKey}:end -->`,
+              ''
+            ].join('\n');
 
             fs.writeFileSync('README.md', readme.replace(marker, `${section}\n${marker}`));
 
@@ -153,28 +148,21 @@ jobs:
             core.setOutput('family_name', familyName);
             core.setOutput('anchor_key', anchorKey);
 
-      - name: Commit
-        run: |
-          git config user.name "template-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git checkout -b "${{ steps.parse.outputs.branch }}"
-          git add README.md
-          git commit -m "Scaffold '${{ steps.parse.outputs.family_name }}' family (closes #${{ github.event.issue.number }})"
-          git push origin "${{ steps.parse.outputs.branch }}"
-
       - name: Open PR
         uses: peter-evans/create-pull-request@v6
         with:
+          commit-message: "Scaffold '${{ steps.parse.outputs.family_name }}' family"
           branch: ${{ steps.parse.outputs.branch }}
-          title: 'Scaffold new family: ${{ steps.parse.outputs.family_name }}'
+          title: "Scaffold new family: ${{ steps.parse.outputs.family_name }}"
           body: |
             Auto-generated from #${{ github.event.issue.number }} after maintainer approval.
 
             **Manual follow-up after merging this PR:**
-            To let future `add_template` submissions auto-file into this new table,
-            add `'${{ steps.parse.outputs.family_name }}': '${{ steps.parse.outputs.anchor_key }}'`
+            Add `'${{ steps.parse.outputs.family_name }}': '${{ steps.parse.outputs.anchor_key }}'`
             to the `familyMap` in `.github/workflows/process-template-submission.yml`,
             and add `${{ steps.parse.outputs.family_name }}` as a dropdown option in
-            `.github/ISSUE_TEMPLATE/add_template.yml`. GitHub blocks the default
-            token from editing workflow files itself, so this one step stays manual.
+            `.github/ISSUE_TEMPLATE/add_template.yml`.
+
+            Closes #${{ github.event.issue.number }}
           base: main
+          delete-branch: true
