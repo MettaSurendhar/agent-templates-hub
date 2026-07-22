@@ -7,6 +7,8 @@ or rewriting from scratch.
 
 If a repo saves you time, a ⭐ helps others find it.
 
+👉 **Got a template to share?** [Submit it here](../../issues/new?template=add_template.yml) — takes under a minute.
+
 ---
 
 ## How this catalog works
